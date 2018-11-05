@@ -11,7 +11,7 @@ namespace IcyApril\WhatsChanged;
 
 class Git implements VCS
 {
-    private $binary = '/usr/bin/git';
+    private $binary = 'git';
 
     public function __construct($binary = "")
     {
@@ -43,18 +43,12 @@ class Git implements VCS
 
     public function gitExists(): bool
     {
-        $returnVar = intval(trim(shell_exec($this->binary . ' &> /dev/null; echo \$?')));
-
-        if ($returnVar === 1) {
-            return true;
-        }
-
-        return false;
+        return !empty('which ' . $this->binary);
     }
 
     private function isProjectGit(): bool
     {
-        $isProjectGit = trim(shell_exec("git rev-parse --is-inside-work-tree"));
+        $isProjectGit = trim(shell_exec($this->binary . " rev-parse --is-inside-work-tree"));
 
         if ($isProjectGit === "true") {
             return true;
@@ -70,9 +64,9 @@ class Git implements VCS
         $from = isset($arguments[1]) ? $arguments[1] : 'HEAD^';
         $to = isset($arguments[2]) ? $arguments[2] : 'HEAD';
         
-        $changes = $this->execute("git diff --name-only");
+        $changes = $this->execute($this->binary . " diff --name-only");
         $changes .= PHP_EOL;
-        $changes .= $this->execute("git diff --name-only $from $to");
+        $changes .= $this->execute($this->binary . " diff --name-only $from $to");
         
         $changes = trim($changes);
         $files = explode(PHP_EOL, $changes);
@@ -81,7 +75,7 @@ class Git implements VCS
 
     private function countCommits(): int
     {
-        return intval(trim($this->execute("git shortlog | grep -E '^[ ]+\\w+' | wc -l")));
+        return intval(trim($this->execute($this->binary . " shortlog | grep -E '^[ ]+\\w+' | wc -l")));
     }
 
     private function execute(string $command): string
