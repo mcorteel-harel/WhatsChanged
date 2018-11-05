@@ -65,14 +65,15 @@ class Git implements VCS
 
     public function getChangedFiles(): array
     {
-
+        $arguments = $_SERVER['argv'];
+        
+        $from = isset($arguments[1]) ? $arguments[1] : 'HEAD^';
+        $to = isset($arguments[2]) ? $arguments[2] : 'HEAD';
+        
         $changes = $this->execute("git diff --name-only");
         $changes .= PHP_EOL;
-
-        if ($this->countCommits() > 1) {
-            $changes .= $this->execute("git diff --name-only HEAD^ HEAD");
-        }
-
+        $changes .= $this->execute("git diff --name-only $from $to");
+        
         $changes = trim($changes);
         $files = explode(PHP_EOL, $changes);
         return $files;

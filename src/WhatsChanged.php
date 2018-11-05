@@ -23,8 +23,11 @@ class WhatsChanged
         $changes = $this->VCS->getChangedFiles();
         $testFiles = $this->getTestFiles($changes);
         
-        $regex = '(' . str_replace(['tests/', '/', '.php'], ['', '\\\\', ''], implode('|', $testFiles)) . ')';
+        if(empty($testFiles)) {
+            die('No tests to run' . PHP_EOL);
+        }
         
+        $regex = '(' . str_replace(['tests/', '/', '.php'], ['', '\\\\', ''], implode('|', $testFiles)) . ')';
         $exec = passthru("./vendor/bin/phpunit --filter '" . $regex . "'");
     }
 
