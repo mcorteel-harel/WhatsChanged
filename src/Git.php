@@ -24,7 +24,7 @@ class Git implements VCS
         }
 
         if ($this->gitExists() !== true) {
-            throw new GitException("Git doesn't appear to exist in: " . $this->binary . PHP_EOL . "Expected 1, got '" . $this->gitStatus() . "'");
+            throw new GitException("Git doesn't appear to exist in: " . $this->binary);
         }
 
         if ($this->isProjectGit() !== true) {
@@ -43,18 +43,13 @@ class Git implements VCS
 
     public function gitExists(): bool
     {
-        $returnVar = intval(trim(shell_exec($this->binary . " &> /dev/null; echo $?")));
+        $returnVar = intval(trim(shell_exec($this->binary . " --help &> /dev/null; echo $?")));
 
-        if ($returnVar === 1) {
+        if ($returnVar === 0) {
             return true;
         }
 
         return false;
-    }
-
-    public function gitStatus(): int
-    {
-        return intval(trim(shell_exec($this->binary . " &> /dev/null; echo $?")));
     }
 
     private function isProjectGit(): bool
