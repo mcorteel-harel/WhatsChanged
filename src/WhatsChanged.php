@@ -22,25 +22,10 @@ class WhatsChanged
     {
         $changes = $this->VCS->getChangedFiles();
         $testFiles = $this->getTestFiles($changes);
-
-        $mask = "%-30s %-30s\n";
-
-        $fails = array();
-
-        foreach ($testFiles as $file) {
-            $exec = exec("./vendor/bin/phpunit " . $file, $full);
-
-            if (strpos($exec, 'OK ') !== false) {
-                printf($mask, $file, $exec);
-            } else {
-                printf($mask, $file, 'FAIL - '.$exec);
-                array_push($fails, implode(PHP_EOL, $full));
-            }
-        }
-
-        if (!empty($fails)) {
-            echo PHP_EOL.PHP_EOL."FAILED TEST OUTPUTS:".PHP_EOL.PHP_EOL.implode(" ", $fails).PHP_EOL.PHP_EOL;
-        }
+        
+        $regex = '(' . str_replace(['tests/', '/', '.php'], ['', '\\\\', ''], implode('|', $testFiles)) . ')';
+        
+        $exec = passthru("./vendor/bin/phpunit --filter '" . $regex . "'");
     }
 
     public function getTestFiles(array $changes): array
