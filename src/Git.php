@@ -43,9 +43,9 @@ class Git implements VCS
 
     public function gitExists(): bool
     {
-        $returnVar = intval(trim(shell_exec($this->binary . " --help &> /dev/null; echo $?")));
+        $returnVar = intval(trim(shell_exec($this->binary . ' &> /dev/null; echo \$?')));
 
-        if ($returnVar === 0) {
+        if ($returnVar === 1) {
             return true;
         }
 
