@@ -28,7 +28,9 @@ class WhatsChanged
         }
         
         $regex = '(' . str_replace(['tests/', '/', '.php'], ['', '\\\\', ''], implode('|', $testFiles)) . ')';
-        $exec = passthru("./vendor/bin/phpunit --filter '" . $regex . "'");
+        $exec = passthru("./vendor/bin/phpunit --filter '" . $regex . "'", $code);
+        
+        exit($code);
     }
 
     public function getTestFiles(array $changes): array
