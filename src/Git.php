@@ -24,7 +24,7 @@ class Git implements VCS
         }
 
         if ($this->gitExists() !== true) {
-            throw new GitException("Git doesn't appear to exist in: " . $this->binary);
+            throw new GitException($this->binary . " doesn't appear to exist in: " . $this->binary);
         }
 
         if ($this->isProjectGit() !== true) {

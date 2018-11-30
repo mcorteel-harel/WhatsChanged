@@ -28,7 +28,8 @@ class WhatsChanged
         }
         
         $regex = '(' . str_replace(['tests/', '/', '.php'], ['', '\\\\', ''], implode('|', $testFiles)) . ')';
-        $exec = passthru("./vendor/bin/phpunit --filter '" . $regex . "'", $code);
+        
+        $exec = system("./vendor/bin/phpunit --filter '" . $regex . "'", $code);
         
         exit($code);
     }
